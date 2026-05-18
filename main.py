@@ -98,7 +98,6 @@ def monitor_loop():
                                     {"name": "🆔 商品 ID", "value": f"`{current_id}`", "inline": True},
                                     {"name": "👤 創作者", "value": author, "inline": False},
                                     {"name": "💰 商城售價", "value": f"{price} wc", "inline": True},
-                                    {"name": "💎 RUID", "value": f"`{hair_item.get('ruid', '無')}`", "inline": True}
                                 ],
                                 "thumbnail": {"url": img_url}
                             }]
