@@ -11,8 +11,8 @@ CORS(app)  # 允許你的 GitHub 前端網頁跨網域把 Token 傳過來
 CONFIG = {
     "token": "",
     "user_id": "",
-    "target_ppsn": "這裡填入你要監控的目標PPSN",
-    "webhook_url": "這裡填入你的Discord_Webhook網址",
+    "target_ppsn": "20372100005972917",
+    "webhook_url": "https://discord.com/api/webhooks/1505922010264637522/h14VhSshRBlVL_mcCFNjTZHaG6yHR1kzwBOQZ9eS8jLn32lP83M-6xkKv3Wi87SZiWpk",
     "last_hair_id": None,
     "is_token_valid": False
 }
@@ -21,7 +21,7 @@ def send_discord_log(msg, is_error=False):
     """發送普通日誌或過期警報到 Discord"""
     payload = {
         "embeds": [{
-            "title": "🚨 系統過期警報" if is_error else "ℹ️ 系統提示",
+            "title": "🚨 TOKEN過期警報" if is_error else "ℹ️ 系統提示",
             "description": msg,
             "color": 15158332 if is_error else 3447003
         }]
