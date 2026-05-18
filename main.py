@@ -5,31 +5,41 @@ from flask_cors import CORS
 import requests
 
 app = Flask(__name__)
-CORS(app)  # 允許你的 GitHub 前端網頁跨網域把 Token 傳過來
+CORS(app)
 
-# 全域變數：儲存目前的憑證與監控狀態
+# ==================== [ ⚙️ 多人多部位監控設定區 ] ====================
+# 
+# 你可以無限往下增加監控目標，每個人可以有獨立的名稱、部位與通知頻道。
+# 部位代碼參考：HAIR(髮型), CAP(帽子), COAT(上衣), PANTS(下衣), CAPE(披風), GLOVE(手套), SHOES(鞋子)
+#
+MONITOR_TARGETS = [
+    {
+        "name": "石油王",
+        "ppsn": "20372100005972917",
+        "webhook_url": "https://discord.com/api/webhooks/1505922010264637522/h14VhSshRBlVL_mcCFNjTZHaG6yHR1kzwBOQZ9eS8jLn32lP83M-6xkKv3Wi87SZiWpk",
+        "parts": ["HAIR"]  # 監控這人的髮型和帽子
+    }
+]
+
+# 全域憑證管理
 CONFIG = {
     "token": "",
     "user_id": "",
-    "target_ppsn": "20372100005972917",
-    "webhook_url": "https://discord.com/api/webhooks/1505922010264637522/h14VhSshRBlVL_mcCFNjTZHaG6yHR1kzwBOQZ9eS8jLn32lP83M-6xkKv3Wi87SZiWpk",
-    "last_hair_id": None,
     "is_token_valid": False
 }
 
-def send_discord_log(msg, is_error=False):
-    """發送普通日誌或過期警報到 Discord"""
-    payload = {
-        "embeds": [{
-            "title": "🚨 TOKEN過期警報" if is_error else "ℹ️ 系統提示",
-            "description": msg,
-            "color": 15158332 if is_error else 3447003
-        }]
-    }
-    try:
-        requests.post(CONFIG["webhook_url"], json=payload, timeout=5)
-    except:
-        pass
+# 記憶庫：用來儲存每個人各部位「上一次的物品ID」
+# 結構會長這樣：{"玩家PPSN": {"HAIR": "123", "CAP": "456"}}
+history_cache = {}
+
+# ===================================================================
+
+def send_system_alert(msg):
+    """發送系統通知（過期警報等）到名單中第一個有效的 Webhook"""
+    if MONITOR_TARGETS and MONITOR_TARGETS[0]["webhook_url"]:
+        payload = {"embeds": [{"title": "🚨 系統狀態回報", "description": msg, "color": 15158332}]}
+        try: requests.post(MONITOR_TARGETS[0]["webhook_url"], json=payload, timeout=5)
+        except: pass
 
 def get_headers():
     return {
@@ -41,106 +51,133 @@ def get_headers():
     }
 
 def monitor_loop():
-    """24小時不間斷監控線程"""
-    print("後端監控線程已啟動...")
+    print("🚀 造型部位獵手已啟動...")
+    
     while True:
-        # 如果目前沒有有效的 Token，就每 10 秒檢查一次有沒有新 Token 進來
+        # 如果 Token 還沒匯入或失效，先暫停等候
         if not CONFIG["is_token_valid"] or not CONFIG["token"]:
             time.sleep(10)
             continue
-
-        ppsn = CONFIG["target_ppsn"]
-        url = f"https://mod-gateway-prd-tokyo-2.nexon.com/mverse/v1/shop/mod/inventory/avatars/manage/equip/list/{ppsn}?_t={int(time.time()*1000)}"
-        
-        try:
-            res = requests.get(url, headers=get_headers(), timeout=10)
             
-            # 處理 Token 過期或失效
-            if res.status_code in [401, 403]:
-                print("偵測到 Token 已過期！")
-                CONFIG["is_token_valid"] = False
-                send_discord_log("❌ **Nexon 憑證已過期！** 監控已暫停，請點擊網頁重新匯入 Token JSON！", is_error=True)
-                continue
+        # 開始輪詢名單上的每一個人
+        for target in MONITOR_TARGETS:
+            name = target["name"]
+            ppsn = target["ppsn"]
+            webhook = target["webhook_url"]
+            monitored_parts = target["parts"]
+            
+            # 初始化該玩家的記憶庫
+            if ppsn not in history_cache:
+                history_cache[ppsn] = {}
                 
-            if res.status_code == 200:
-                items = res.json().get("data", {}).get("items", [])
-                hair_item = next((item for item in items if item.get("avatarType") == "HAIR"), None)
+            url = f"https://mod-gateway-prd-tokyo-2.nexon.com/mverse/v1/shop/mod/inventory/avatars/manage/equip/list/{ppsn}?_t={int(time.time()*1000)}"
+            
+            try:
+                res = requests.get(url, headers=get_headers(), timeout=10)
                 
-                if hair_item:
-                    current_id = hair_item.get("itemId")
-                    current_name = hair_item.get("itemName", "未命名髮型")
+                # 處理 Token 過期
+                if res.status_code in [401, 403]:
+                    print("⚠️ Token 已過期！")
+                    CONFIG["is_token_valid"] = False
+                    send_system_alert("❌ **憑證已過期！**自己掰開準備投胎！")
+                    break # 跳出人物循環，等待新 Token
                     
-                    # 剛匯入 Token 時的初始紀錄
-                    if CONFIG["last_hair_id"] is None:
-                        CONFIG["last_hair_id"] = current_id
-                        print(f"紀錄初始髮型: {current_name}")
+                if res.status_code == 200:
+                    items = res.json().get("data", {}).get("items", [])
                     
-                    # 發現更換髮型
-                    elif current_id != CONFIG["last_hair_id"]:
-                        CONFIG["last_hair_id"] = current_id
+                    # 針對該玩家指定的「每個部位」進行檢查
+                    for part in monitored_parts:
+                        # 找出對應部位的穿戴道具
+                        equip_item = next((item for item in items if item.get("avatarType") == part), None)
                         
-                        # 抓取詳細商城資料
-                        detail_url = f"https://mod-gateway-prd-tokyo-2.nexon.com/mverse/v1/shop/mod/sale/avatars/{current_id}"
-                        detail_res = requests.get(detail_url, headers=get_headers(), timeout=10)
-                        detail = detail_res.json().get("data", {}) if detail_res.status_code == 200 else {}
-                        
-                        # 發送精美換裝通知
-                        img_url = hair_item.get("itemImageUrl") or hair_item.get("itemThumbnailUrl") or f"https://mod-file.dn.nexon.com/prime/inventory/icon/{current_id}"
-                        price = detail.get("itemPrice") or detail.get("price") or "未上架"
-                        author = f"{detail.get('nickname')}#{detail.get('profileCode')}" if detail.get('profileCode') else (detail.get('nickname') or "未知")
-                        
-                        payload = {
-                            "embeds": [{
-                                "title": "🚨 監控目標更換髮型！",
-                                "color": 16743484,
-                                "fields": [
-                                    {"name": "📝 髮型名稱", "value": current_name, "inline": True},
-                                    {"name": "🆔 商品 ID", "value": f"`{current_id}`", "inline": True},
-                                    {"name": "👤 創作者", "value": author, "inline": False},
-                                    {"name": "💰 商城售價", "value": f"{price} wc", "inline": True},
-                                ],
-                                "thumbnail": {"url": img_url}
-                            }]
-                        }
-                        requests.post(CONFIG["webhook_url"], json=payload, timeout=5)
-            
-        except Exception as e:
-            print(f"監控循環發生異常: {e}")
-            
-        # 每 30 秒輪詢檢查一次
-        time.sleep(60)
+                        if equip_item:
+                            current_id = equip_item.get("itemId")
+                            current_name = equip_item.get("itemName", f"未命名{part}")
+                            
+                            # 取得上一次記錄的 ID
+                            last_id = history_cache[ppsn].get(part)
+                            
+                            # 1. 第一次監控到此部位：只紀錄，不發通知
+                            if last_id is None:
+                                history_cache[ppsn][part] = current_id
+                                print(f"📌 [{name}] 已紀錄初始 {part}: {current_name} ({current_id})")
+                                
+                            # 2. 發現更換（目前 ID 與上次紀錄不同）
+                            elif current_id != last_id:
+                                print(f"🔥 偵測到 [{name}] 更換了 {part}！新道具: {current_name}")
+                                history_cache[ppsn][part] = current_id # 更新記憶庫
+                                
+                                # 抓取商城詳細資料 (作者與價格)
+                                detail_url = f"https://mod-gateway-prd-tokyo-2.nexon.com/mverse/v1/shop/mod/sale/avatars/{current_id}"
+                                detail_res = requests.get(detail_url, headers=get_headers(), timeout=10)
+                                detail = detail_res.json().get("data", {}) if detail_res.status_code == 200 else {}
+                                
+                                # 組合 Discord 通知卡片
+                                img_url = equip_item.get("itemImageUrl") or equip_item.get("itemThumbnailUrl") or f"https://mod-file.dn.nexoncdn.com/prime/inventory/icon/{current_id}"
+                                price = detail.get("itemPrice") or detail.get("price") or "未上架"
+                                author = f"{detail.get('nickname')}#{detail.get('profileCode')}" if detail.get('profileCode') else (detail.get('nickname') or "未知")
+                                
+                                part_names = {"HAIR": "髮型 💇", "CAP": "帽子 👒", "COAT": "上衣 👕", "PANTS": "下衣 👖", "CAPE": "披風 🎒"}
+                                part_display = part_names.get(part, part)
 
-# 在 Flask 啟動前，先把後端監控線程丟到背景跑
+                                payload = {
+                                    "embeds": [{
+                                        "title": f"🚨 監控提示：{name} 更換造型！",
+                                        "description": f"目標玩家已更新了 **{part_display}** 部位。",
+                                        "color": 3447003 if part == "HAIR" else 10181046, # 依部位換卡片顏色
+                                        "fields": [
+                                            {"name": "📝 道具名稱", "value": current_name, "inline": True},
+                                            {"name": "🆔 商品 ID", "value": f"`{current_id}`", "inline": True},
+                                            {"name": "👤 創作者", "value": author, "inline": False},
+                                            {"name": "💰 商城售價", "value": f"{price} wc", "inline": True}
+                                        ],
+                                        "thumbnail": {"url": img_url},
+                                        "footer": {"text": f"造型獵手捕捉 • 部位: {part}"}
+                                    }]
+                                }
+                                requests.post(webhook, json=payload, timeout=5)
+                                
+            except Exception as e:
+                print(f"❌ 監控 [{name}] 時發生異常: {e}")
+                
+            # 每檢查完一個人，微調休息 0.5 秒，避免連續戳 API 被 Nexon 阻擋
+            time.sleep(0.5)
+            
+        # 全部名單巡完一輪後，大休息 30 秒再進入下一次大輪詢
+        time.sleep(30)
+
+# 啟動背景線程
 monitor_thread = threading.Thread(target=monitor_loop, daemon=True)
 monitor_thread.start()
 
 @app.route('/')
 def home():
     status = "運作中 (Token 有效)" if CONFIG["is_token_valid"] else "等待 Token 匯入中"
-    return f"MSW 24H 監控服務狀態: {status}"
+    return f"MSW 多人多部位監控服務已啟動。當前狀態: {status}"
 
 @app.route('/api/update-token', methods=['POST'])
 def update_token():
-    """接收前端網頁丟過來的 JSON Token"""
     data = request.json or {}
     token = data.get("token")
     user_id = data.get("userId")
     
     if not token or not user_id:
-        return jsonify({"success": False, "message": "缺少必要的 Token 欄位"}), 400
+        return jsonify({"success": False, "message": "缺少 Token 欄位"}), 400
         
     CONFIG["token"] = token
     CONFIG["user_id"] = user_id
     CONFIG["is_token_valid"] = True
-    CONFIG["last_hair_id"] = None # 重新重設以防漏看
     
-    print("成功從網頁更新 Token！")
-    send_discord_log("🔑 **Token 更新成功！** 雲端 24H 監控已重新繼續運作。")
+    # 每次重新匯入新 Token 時，清除快取重置，確保能抓到最新狀態
+    global history_cache
+    history_cache = {}
     
-    return jsonify({"success": True, "message": "後端 Token 已成功同步並啟用監控！"})
+    print("🔑 雲端已同步收到網頁更新的 Token，重置監控快取！")
+    send_system_alert("🔑 **Token 更新成功！** 多人多部位監控已重新開始全天候運作。")
+    
+    return jsonify({"success": True, "message": "雲端多目標監控已重新繼續運作！"})
 
 if __name__ == '__main__':
-    # Render 會自動提供 PORT 環境變數
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
