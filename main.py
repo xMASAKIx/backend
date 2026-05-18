@@ -20,7 +20,7 @@ MONITOR_TARGETS = [
         "parts": ["HAIR"]  # 監控這人的髮型和帽子
     },
     {
-        "name": "test",
+        "name": "{name}",
         "ppsn": "20372100006053110",
         "webhook_url": "https://discord.com/api/webhooks/1505922010264637522/h14VhSshRBlVL_mcCFNjTZHaG6yHR1kzwBOQZ9eS8jLn32lP83M-6xkKv3Wi87SZiWpk",
         "parts": ["HAIR","CAPE"]  # 監控這人的髮型和帽子
@@ -123,19 +123,19 @@ def monitor_loop():
                                 price = detail.get("itemPrice") or detail.get("price") or "未上架"
                                 author = f"{detail.get('nickname')}#{detail.get('profileCode')}" if detail.get('profileCode') else (detail.get('nickname') or "未知")
                                 
-                                part_names = {"HAIR": "髮型 💇", "CAP": "帽子 👒", "COAT": "上衣 👕", "PANTS": "下衣 👖", "CAPE": "披風 🎒"}
+                                part_names = {"HAIR": " 髮型 ", "CAP": " 帽子 ", "COAT": " 上衣 ", "PANTS": " 下衣", "CAPE": " 披風 ", "SHOES": " 鞋子 "}
                                 part_display = part_names.get(part, part)
 
                                 payload = {
                                     "embeds": [{
-                                        "title": f"🚨 監控提示：{name} 更換造型！",
-                                        "description": f"目標玩家已更新了 **{part_display}** 部位。",
+                                        "title": f"🚨 {name} 更換造型！",
+                                        "description": f"玩家穿上了 **{part_display}** 部位。",
                                         "color": 3447003 if part == "HAIR" else 10181046, # 依部位換卡片顏色
                                         "fields": [
                                             {"name": "📝 道具名稱", "value": current_name, "inline": True},
                                             {"name": "🆔 商品 ID", "value": f"`{current_id}`", "inline": True},
                                             {"name": "👤 創作者", "value": author, "inline": False},
-                                            {"name": "💰 商城售價", "value": f"{price} wc", "inline": True}
+                                            {"name": "💰 商城售價", "value": f"{price} wc", "inline": False}
                                         ],
                                         "thumbnail": {"url": img_url},
                                         "footer": {"text": f"造型獵手捕捉 • 部位: {part}"}
@@ -150,7 +150,7 @@ def monitor_loop():
             time.sleep(0.5)
             
         # 全部名單巡完一輪後，大休息 30 秒再進入下一次大輪詢
-        time.sleep(30)
+        time.sleep(15)
 
 # 啟動背景線程
 monitor_thread = threading.Thread(target=monitor_loop, daemon=True)
