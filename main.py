@@ -18,12 +18,6 @@ MONITOR_TARGETS = [
         "ppsn": "20372100005972917",
         "webhook_url": "https://discord.com/api/webhooks/1505922010264637522/h14VhSshRBlVL_mcCFNjTZHaG6yHR1kzwBOQZ9eS8jLn32lP83M-6xkKv3Wi87SZiWpk",
         "parts": ["HAIR"]  # 監控這人的髮型和帽子
-    },
-    {
-        "name": "{name}",
-        "ppsn": "20372100006053110",
-        "webhook_url": "https://discord.com/api/webhooks/1505922010264637522/h14VhSshRBlVL_mcCFNjTZHaG6yHR1kzwBOQZ9eS8jLn32lP83M-6xkKv3Wi87SZiWpk",
-        "parts": ["HAIR","CAPE"]  # 監控這人的髮型和帽子
     }
 ]
 
@@ -132,10 +126,8 @@ def monitor_loop():
                                         "description": f"玩家穿上了 **{part_display}** 部位。",
                                         "color": 3447003 if part == "HAIR" else 10181046, # 依部位換卡片顏色
                                         "fields": [
-                                            {"name": "📝 道具名稱", "value": current_name, "inline": True},
                                             {"name": "🆔 商品 ID", "value": f"`{current_id}`", "inline": True},
-                                            {"name": "👤 創作者", "value": author, "inline": False},
-                                            {"name": "💰 商城售價", "value": f"{price} wc", "inline": False}
+                                            {"name": "👤 創作者", "value": author, "inline": False}
                                         ],
                                         "thumbnail": {"url": img_url},
                                         "footer": {"text": f"造型獵手捕捉 • 部位: {part}"}
