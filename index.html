@@ -2,19 +2,19 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>MSW 監控憑證上傳端</title>
+    <title>MSW 雲端監控憑證上傳</title>
     <style>
         body { background: #0f0f12; color: #e4e4e7; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .box { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 30px; text-align: center; max-width: 400px; width: 100%; }
-        button { background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 15px;}
-        button:hover { background: #2563eb; }
+        button { background: #a855f7; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 15px;}
+        button:hover { background: #9333ea; }
         #status { margin-top: 15px; font-size: 14px; color: #10b981; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h2 style="color: #4ade80; margin-top: 0;">🔑 雲端監控 Token 上傳</h2>
+    <h2 style="color: #c084fc; margin-top: 0;">🚀 同步憑證至 Render 雲端</h2>
     <p style="color: #a1a1aa; font-size: 14px;">當 Discord 提示過期時，請在此匯入最新帳號 JSON。上傳成功後即可直接關閉此網頁。</p>
     
     <input type="file" id="file_selector" accept=".json" style="display: none;">
@@ -24,7 +24,7 @@
 </div>
 
 <script>
-    // ⚠️ 請替換成你在 Render 部署成功後拿到的 Web Service 網址
+    // ⚠️ 請記得替換成你在 Render 部署成功後拿到的 Web Service 網址
     const RENDER_BACKEND_URL = "https://你的專案名稱.onrender.com";
 
     document.getElementById('file_selector').onchange = function(e) {
@@ -32,27 +32,33 @@
         if (!file) return;
         
         const statusDiv = document.getElementById('status');
-        statusDiv.style.color = "#3b82f6";
+        statusDiv.style.color = "#a855f7";
         statusDiv.innerText = "⏳ 正在解析並同步至 Render 雲端...";
 
         const reader = new FileReader();
         reader.onload = async function(event) {
             try {
+                // 解析上傳的 JSON 資料
                 const data = JSON.parse(event.target.result);
+                
+                // 1. 取得當前指定的啟用帳號 ID (例如 "20372100006053110")
                 const currentId = data.current_account;
                 const accounts = data.accounts || [];
-                const activeAccount = accounts.find(acc => acc.user_id === currentId);
+                
+                // 2. 從陣列中尋找符合該 ID 的帳號物件
+                const activeAccount = accounts.find(acc => String(acc.user_id) === String(currentId));
                 
                 if (!activeAccount) {
-                    throw new Error("找不到目前啟用的帳號");
+                    throw new Error("在 accounts 列表中找不到目前 current_account 指定的 user_id");
                 }
 
+                // 3. 打包準備發送給 Render 後端的資料
                 const payload = {
                     token: activeAccount.access_token,
                     userId: activeAccount.user_id
                 };
 
-                // 將憑證發送到 Render 後端
+                // 4. 發送到 Render 後端 API
                 const response = await fetch(`${RENDER_BACKEND_URL}/api/update-token`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -65,13 +71,13 @@
                     statusDiv.innerText = "✅ 雲端 Token 更新成功！您可以安全關閉此網頁。";
                 } else {
                     statusDiv.style.color = "#ef4444";
-                    statusDiv.innerText = "❌ 後端拒絕請求: " + resJson.message;
+                    statusDiv.innerText = "❌ 後端拒絕: " + resJson.message;
                 }
             } catch (err) {
                 statusDiv.style.color = "#ef4444";
                 statusDiv.innerText = "❌ 失敗: " + err.message;
             }
-            document.getElementById('file_selector').value = ''; // 清空選擇器
+            document.getElementById('file_selector').value = ''; // 清空選擇器以利下次重複選取
         };
         reader.readAsText(file);
     };
