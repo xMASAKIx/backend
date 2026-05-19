@@ -17,15 +17,18 @@ MONITOR_TARGETS = [
         "name": "石油王",
         "ppsn": "20372100005972917",
         "webhook_url": "https://discord.com/api/webhooks/1505922010264637522/h14VhSshRBlVL_mcCFNjTZHaG6yHR1kzwBOQZ9eS8jLn32lP83M-6xkKv3Wi87SZiWpk",
-        "parts": ["HAIR"]  # 監控這人的髮型和帽子
+        "parts": ["HAIR"]  # 監控這人的髮型
     },
     {
         "name": "韓國PAKA頭",
         "ppsn": "20372100000900216",
         "webhook_url": "https://discord.com/api/webhooks/1505922010264637522/h14VhSshRBlVL_mcCFNjTZHaG6yHR1kzwBOQZ9eS8jLn32lP83M-6xkKv3Wi87SZiWpk",
-        "parts": ["HAIR"]  # 監控這人的髮型和帽子
+        "parts": ["HAIR"]  # 監控這人的髮型
     }
 ]
+
+# ⚠️ 請把這裡換成你「裝備提取網站」在 GitHub Pages 的真實管理面板網址
+MY_EXTRACTOR_WEB_URL = "https://xmasakix.github.io/msw-extractor-web/admin.html"
 
 # 全域憑證管理
 CONFIG = {
@@ -35,15 +38,22 @@ CONFIG = {
 }
 
 # 記憶庫：用來儲存每個人各部位「上一次的物品ID」
-# 結構會長這樣：{"玩家PPSN": {"HAIR": "123", "CAP": "456"}}
 history_cache = {}
 
 # ===================================================================
 
 def send_system_alert(msg):
-    """發送系統通知（過期警報等）到名單中第一個有效的 Webhook"""
+    """發送系統通知（過期警報等）到名單中第一個有效的 Webhook，並附帶一鍵開啟網站連結"""
     if MONITOR_TARGETS and MONITOR_TARGETS[0]["webhook_url"]:
-        payload = {"embeds": [{"title": "🚨 系統狀態回報", "description": msg, "color": 15158332}]}
+        # 在警報訊息底下串接藍色傳送門連結
+        click_link = f"\n\n🔗 **[點我一鍵開啟裝備提取網站]({MY_EXTRACTOR_WEB_URL})**"
+        payload = {
+            "embeds": [{
+                "title": "🚨 系統狀態回報", 
+                "description": f"{msg}{click_link}", 
+                "color": 15158332
+            }]
+        }
         try: requests.post(MONITOR_TARGETS[0]["webhook_url"], json=payload, timeout=5)
         except: pass
 
@@ -85,7 +95,7 @@ def monitor_loop():
                 if res.status_code in [401, 403]:
                     print("⚠️ Token 已過期！")
                     CONFIG["is_token_valid"] = False
-                    send_system_alert("❌ **憑證已過期！**自己掰開準備投胎！")
+                    send_system_alert("❌ **憑證已過期！** 請重新更新 Token。")
                     break # 跳出人物循環，等待新 Token
                     
                 if res.status_code == 200:
@@ -110,7 +120,7 @@ def monitor_loop():
                                 
                             # 2. 發現更換（目前 ID 與上次紀錄不同）
                             elif current_id != last_id:
-                                print(f"🔥 偵測到 [{name}] 更換了 {part}！新道具: {current_name}")
+                                print(f"🔥 偵測到 [{name}] 更換了 {part}！新造型: {current_name}")
                                 history_cache[ppsn][part] = current_id # 更新記憶庫
                                 
                                 # 抓取商城詳細資料 (作者與價格)
@@ -120,20 +130,23 @@ def monitor_loop():
                                 
                                 # 組合 Discord 通知卡片
                                 img_url = equip_item.get("itemImageUrl") or equip_item.get("itemThumbnailUrl") or f"https://mod-file.dn.nexoncdn.com/prime/inventory/icon/{current_id}"
-                                price = detail.get("itemPrice") or detail.get("price") or "未上架"
                                 author = f"{detail.get('nickname')}#{detail.get('profileCode')}" if detail.get('profileCode') else (detail.get('nickname') or "未知")
                                 
-                                part_names = {"HAIR": " 髮型 ", "CAP": " 帽子 ", "COAT": " 上衣 ", "PANTS": " 下衣", "CAPE": " 披風 ", "SHOES": " 鞋子 "}
+                                part_names = {"HAIR": " 髮型 ", "CAP": " 帽子 ", "COAT": " 上衣 ", "PANTS": " 下衣 ", "CAPE": " 披風 ", "SHOES": " 鞋子 "}
                                 part_display = part_names.get(part, part)
+
+                                # 🛠️ 自動生成帶有商品 ID 參數的一鍵搜尋網址
+                                auto_search_url = f"{MY_EXTRACTOR_WEB_URL}?search_id={current_id}"
 
                                 payload = {
                                     "embeds": [{
                                         "title": f"🚨 {name} 更換造型！",
-                                        "description": f"玩家穿上了 **{part_display}** 部位。",
-                                        "color": 3447003 if part == "HAIR" else 10181046, # 依部位換卡片顏色
+                                        # 這裡把道具名稱加上 Markdown 語法，變成一鍵跳轉搜尋按鈕
+                                        "description": f"玩家穿上了 **{part_display}** 部位：**[{current_name}]({auto_search_url})**\n\n💡 *[點擊上方藍字道具名稱，即可自動開啟網站並搜尋該商品]*",
+                                        "color": 3447003 if part == "HAIR" else 10181046, 
                                         "fields": [
                                             {"name": "🆔 商品 ID", "value": f"`{current_id}`", "inline": True},
-                                            {"name": "👤 創作者", "value": author, "inline": False}
+                                            {"name": "👤 創作者", "value": author, "inline": True}
                                         ],
                                         "thumbnail": {"url": img_url},
                                         "footer": {"text": f"造型獵手捕捉 • 部位: {part}"}
@@ -144,10 +157,8 @@ def monitor_loop():
             except Exception as e:
                 print(f"❌ 監控 [{name}] 時發生異常: {e}")
                 
-            # 每檢查完一個人，微調休息 0.5 秒，避免連續戳 API 被 Nexon 阻擋
             time.sleep(0.5)
             
-        # 全部名單巡完一輪後，大休息 30 秒再進入下一次大輪詢
         time.sleep(15)
 
 # 啟動背景線程
@@ -172,14 +183,28 @@ def update_token():
     CONFIG["user_id"] = user_id
     CONFIG["is_token_valid"] = True
     
-    # 每次重新匯入新 Token 時，清除快取重置，確保能抓到最新狀態
     global history_cache
     history_cache = {}
     
     print("🔑 雲端已同步收到網頁更新的 Token，重置監控快取！")
-    send_system_alert("🔑 **Token 更新成功！** 多人多部位監控已重新開始全天候運作。")
+    send_system_alert("🔑 **Token 更新成功！** 監控已重新開始運作。")
     
     return jsonify({"success": True, "message": "雲端多目標監控已重新繼續運作！"})
+
+# 🌐 新增：供前端網頁自動過來「撈取目前有效 Token」的 API 路由
+@app.route('/api/get-current-token', methods=['GET'])
+def get_current_token():
+    if CONFIG["is_token_valid"] and CONFIG["token"]:
+        return jsonify({
+            "success": True, 
+            "token": CONFIG["token"], 
+            "userId": CONFIG["user_id"]
+        })
+    else:
+        return jsonify({
+            "success": False, 
+            "message": "雲端目前沒有有效的 Token，請先更新"
+        }), 404
 
 if __name__ == '__main__':
     import os
