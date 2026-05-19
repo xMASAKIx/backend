@@ -28,7 +28,7 @@ MONITOR_TARGETS = [
 ]
 
 # ⚠️ 請把這裡換成你「裝備提取網站」在 GitHub Pages 的真實管理面板網址
-MY_EXTRACTOR_WEB_URL = "https://xmasakix.github.io/msw-extractor-web/admin.html"
+MY_EXTRACTOR_WEB_URL = "https://xmasakix.github.io/msw-extractor-web/index.html"
 
 # 全域憑證管理
 CONFIG = {
