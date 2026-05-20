@@ -159,7 +159,7 @@ def monitor_loop():
                 
             time.sleep(0.5)
             
-        time.sleep(15)
+        time.sleep(10)
 
 # 啟動背景線程
 monitor_thread = threading.Thread(target=monitor_loop, daemon=True)
