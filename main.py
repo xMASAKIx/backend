@@ -14,13 +14,13 @@ CORS(app)
 #
 MONITOR_TARGETS = [
     {
-        "name": "石油王",
+        "name": "Xuan",
         "ppsn": "20372100005972917",
         "webhook_url": "https://discord.com/api/webhooks/1505922010264637522/h14VhSshRBlVL_mcCFNjTZHaG6yHR1kzwBOQZ9eS8jLn32lP83M-6xkKv3Wi87SZiWpk",
         "parts": ["HAIR"]  # 監控這人的髮型
     },
     {
-        "name": "韓國PAKA頭",
+        "name": "쿠죠린",
         "ppsn": "20372100000900216",
         "webhook_url": "https://discord.com/api/webhooks/1505922010264637522/h14VhSshRBlVL_mcCFNjTZHaG6yHR1kzwBOQZ9eS8jLn32lP83M-6xkKv3Wi87SZiWpk",
         "parts": ["HAIR"]  # 監控這人的髮型
@@ -30,6 +30,12 @@ MONITOR_TARGETS = [
         "ppsn": "20372100000275176",
         "webhook_url": "https://discord.com/api/webhooks/1505922010264637522/h14VhSshRBlVL_mcCFNjTZHaG6yHR1kzwBOQZ9eS8jLn32lP83M-6xkKv3Wi87SZiWpk",
         "parts": ["HAIR"]  # 監控這人的髮型
+    },
+    {
+        "name": "캡틴봉봉",
+        "ppsn": "20372100000155226",
+        "webhook_url": "https://discord.com/api/webhooks/1505922010264637522/h14VhSshRBlVL_mcCFNjTZHaG6yHR1kzwBOQZ9eS8jLn32lP83M-6xkKv3Wi87SZiWpk",
+        "parts": ["CAPE"]  # 監控這人的披風
     }
 ]
 
