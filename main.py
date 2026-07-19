@@ -26,18 +26,6 @@ MONITOR_TARGETS = [
         "parts": ["HAIR"]  # 監控這人的髮型
     },
     {
-        "name": "台灣石油王",
-        "ppsn": "20372100005972917",
-        "webhook_url": "https://discord.com/api/webhooks/1497581197201506376/PlEHn82RIwE1OVEtuvO1n317L0b0i91l2b8uwGs0mPE9-izVcqkJ49Uxd6rlV_30NzDq",
-        "parts": ["HAIR"]  # 監控這人的髮型
-    },
-    {
-        "name": "韓國石油王",
-        "ppsn": "20372100000900216",
-        "webhook_url": "https://discord.com/api/webhooks/1497581197201506376/PlEHn82RIwE1OVEtuvO1n317L0b0i91l2b8uwGs0mPE9-izVcqkJ49Uxd6rlV_30NzDq",
-        "parts": ["HAIR"]  # 監控這人的髮型
-    },
-    {
         "name": "흐접",
         "ppsn": "20372100000275176",
         "webhook_url": "https://discord.com/api/webhooks/1505922010264637522/h14VhSshRBlVL_mcCFNjTZHaG6yHR1kzwBOQZ9eS8jLn32lP83M-6xkKv3Wi87SZiWpk",
@@ -67,9 +55,10 @@ history_cache = {}
 # ===================================================================
 
 def send_system_alert(msg):
-    """發送系統通知（過期警報等）到名單中第一個有效的 Webhook"""
+    """發送系統通知（過期警報等）到名單中第一個有效的 Webhook，並附帶一鍵開啟網站連結"""
     if MONITOR_TARGETS and MONITOR_TARGETS[0]["webhook_url"]:
         # 在警報訊息底下串接藍色傳送門連結
+        click_link = f"\n\n🔗 **[點我一鍵開啟裝備提取網站]({MY_EXTRACTOR_WEB_URL})**"
         payload = {
             "embeds": [{
                 "title": "🚨 系統狀態回報", 
@@ -165,14 +154,14 @@ def monitor_loop():
                                     "embeds": [{
                                         "title": f"🚨 {name} 更換造型！",
                                         # 這裡把道具名稱加上 Markdown 語法，變成一鍵跳轉搜尋按鈕
-                                        "description": f"玩家穿上了 **{part_display}**：**[{current_name}]**\n\n",
+                                        "description": f"玩家穿上了 **{part_display}** 部位：**[{current_name}]({auto_search_url})**\n\n💡 *[點擊上方藍字道具名稱，即可自動開啟網站並搜尋該商品]*",
                                         "color": 3447003 if part == "HAIR" else 10181046, 
                                         "fields": [
                                             {"name": "🆔 商品 ID", "value": f"`{current_id}`", "inline": True},
-                                            {"name": "👤 作者", "value": author, "inline": True}
+                                            {"name": "👤 創作者", "value": author, "inline": True}
                                         ],
                                         "thumbnail": {"url": img_url},
-                                        "footer": {"text": f"造型變更{part}"}
+                                        "footer": {"text": f"造型獵手捕捉 • 部位: {part}"}
                                     }]
                                 }
                                 requests.post(webhook, json=payload, timeout=5)
