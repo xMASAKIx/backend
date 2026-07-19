@@ -51,8 +51,6 @@ MONITOR_TARGETS = [
     }
 ]
 
-# ⚠️ 請把這裡換成你「裝備提取網站」在 GitHub Pages 的真實管理面板網址
-MY_EXTRACTOR_WEB_URL = "https://xmasakix.github.io/msw-extractor-web/index.html"
 
 # 全域憑證管理
 CONFIG = {
@@ -67,10 +65,8 @@ history_cache = {}
 # ===================================================================
 
 def send_system_alert(msg):
-    """發送系統通知（過期警報等）到名單中第一個有效的 Webhook，並附帶一鍵開啟網站連結"""
+    """發送系統通知（過期警報等）到名單中第一個有效的 Webhook"""
     if MONITOR_TARGETS and MONITOR_TARGETS[0]["webhook_url"]:
-        # 在警報訊息底下串接藍色傳送門連結
-        click_link = f"\n\n🔗 **[點我一鍵開啟裝備提取網站]({MY_EXTRACTOR_WEB_URL})**"
         payload = {
             "embeds": [{
                 "title": "🚨 系統狀態回報", 
@@ -158,9 +154,6 @@ def monitor_loop():
                                 
                                 part_names = {"HAIR": " 髮型 ", "CAP": " 帽子 ", "COAT": " 上衣 ", "PANTS": " 下衣 ", "CAPE": " 披風 ", "SHOES": " 鞋子 "}
                                 part_display = part_names.get(part, part)
-
-                                # 🛠️ 自動生成帶有商品 ID 參數的一鍵搜尋網址
-                                auto_search_url = f"{MY_EXTRACTOR_WEB_URL}?search_id={current_id}"
 
                                 payload = {
                                     "embeds": [{
