@@ -50,10 +50,10 @@ MONITOR_TARGETS = [
         "parts": ["HAIR"]  # 監控這人的披風
     },
     {
-        "name": "캡틴봉봉",
-        "ppsn": "20372100000155226",
+        "name": "Mizune",
+        "ppsn": "20372100005241912",
         "webhook_url": "https://discord.com/api/webhooks/1505922010264637522/h14VhSshRBlVL_mcCFNjTZHaG6yHR1kzwBOQZ9eS8jLn32lP83M-6xkKv3Wi87SZiWpk",
-        "parts": ["HAIR"]  # 監控這人的披風
+        "parts": ["CAPE"]  # 監控這人的披風
     }
 ]
 
