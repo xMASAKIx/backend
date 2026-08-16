@@ -16,49 +16,49 @@ MONITOR_TARGETS = [
     {
         "name": "Xuan",
         "ppsn": "20372100005972917",
-        "webhook_url": "https://discord.com/api/webhooks/1538537859470856293/PdqlnpcNmUDbrFGjWbiKKCzXSMr0QHdA8ntInZX-2c-sehxlm6ciGZIUys5ZvBwF-Cju",
+        "webhook_url": "https://discord.com/api/webhooks/1538539299140673598/riKlzYja9kr1WCy58SRsY0trtX7gq0K9cgnugs2T1xTMd00cNNIq267VQ_R8oizMSJdC",
         "parts": ["HAIR"]  # 監控這人的髮型
     },
     {
         "name": "쿠죠린",
         "ppsn": "20372100000900216",
-        "webhook_url": "https://discord.com/api/webhooks/1538537859470856293/PdqlnpcNmUDbrFGjWbiKKCzXSMr0QHdA8ntInZX-2c-sehxlm6ciGZIUys5ZvBwF-Cju",
+        "webhook_url": "https://discord.com/api/webhooks/1538539299140673598/riKlzYja9kr1WCy58SRsY0trtX7gq0K9cgnugs2T1xTMd00cNNIq267VQ_R8oizMSJdC",
         "parts": ["HAIR"]  # 監控這人的髮型
     },
     {
         "name": "흐접",
         "ppsn": "20372100000275176",
-        "webhook_url": "https://discord.com/api/webhooks/1538537859470856293/PdqlnpcNmUDbrFGjWbiKKCzXSMr0QHdA8ntInZX-2c-sehxlm6ciGZIUys5ZvBwF-Cju",
+        "webhook_url": "https://discord.com/api/webhooks/1538539299140673598/riKlzYja9kr1WCy58SRsY0trtX7gq0K9cgnugs2T1xTMd00cNNIq267VQ_R8oizMSJdC",
         "parts": ["HAIR"]  # 監控這人的髮型
     },
     {
         "name": "캡틴봉봉",
         "ppsn": "20372100000155226",
-        "webhook_url": "https://discord.com/api/webhooks/1538537859470856293/PdqlnpcNmUDbrFGjWbiKKCzXSMr0QHdA8ntInZX-2c-sehxlm6ciGZIUys5ZvBwF-Cju",
+        "webhook_url": "https://discord.com/api/webhooks/1538539299140673598/riKlzYja9kr1WCy58SRsY0trtX7gq0K9cgnugs2T1xTMd00cNNIq267VQ_R8oizMSJdC",
         "parts": ["CAPE"]  # 監控這人的披風
     },
     {
         "name": "PAKA",
         "ppsn": "20372100005770592",
-        "webhook_url": "https://discord.com/api/webhooks/1538537859470856293/PdqlnpcNmUDbrFGjWbiKKCzXSMr0QHdA8ntInZX-2c-sehxlm6ciGZIUys5ZvBwF-Cju",
+        "webhook_url": "https://discord.com/api/webhooks/1538539299140673598/riKlzYja9kr1WCy58SRsY0trtX7gq0K9cgnugs2T1xTMd00cNNIq267VQ_R8oizMSJdC",
         "parts": ["CAPE"]  # 監控這人的披風
     },
     {
         "name": "PAKA",
         "ppsn": "20372100005770592",
-        "webhook_url": "https://discord.com/api/webhooks/1538537859470856293/PdqlnpcNmUDbrFGjWbiKKCzXSMr0QHdA8ntInZX-2c-sehxlm6ciGZIUys5ZvBwF-Cju",
+        "webhook_url": "https://discord.com/api/webhooks/1538539299140673598/riKlzYja9kr1WCy58SRsY0trtX7gq0K9cgnugs2T1xTMd00cNNIq267VQ_R8oizMSJdC",
         "parts": ["HAIR"]  # 監控這人的披風
     },
     {
         "name": "阿福",
         "ppsn": "20372100005241912",
-        "webhook_url": "https://discord.com/api/webhooks/1538537859470856293/PdqlnpcNmUDbrFGjWbiKKCzXSMr0QHdA8ntInZX-2c-sehxlm6ciGZIUys5ZvBwF-Cju",
+        "webhook_url": "https://discord.com/api/webhooks/1538539299140673598/riKlzYja9kr1WCy58SRsY0trtX7gq0K9cgnugs2T1xTMd00cNNIq267VQ_R8oizMSJdC",
         "parts": ["CAPE"]  # 監控這人的披風
     },
     {
         "name": "阿福",
         "ppsn": "20372100005241912",
-        "webhook_url": "https://discord.com/api/webhooks/1538537859470856293/PdqlnpcNmUDbrFGjWbiKKCzXSMr0QHdA8ntInZX-2c-sehxlm6ciGZIUys5ZvBwF-Cju",
+        "webhook_url": "https://discord.com/api/webhooks/1538539299140673598/riKlzYja9kr1WCy58SRsY0trtX7gq0K9cgnugs2T1xTMd00cNNIq267VQ_R8oizMSJdC",
         "parts": ["HAIR"]  # 監控這人的披風
     }
 ]
