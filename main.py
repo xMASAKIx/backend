@@ -193,7 +193,7 @@ def monitor_loop():
             except Exception as e:
                 print(f"❌ 監控 [{name}] 時發生異常: {e}")
                 
-            time.sleep(0.5)
+            time.sleep(0.8)
             
         time.sleep(10)
 
