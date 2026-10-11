@@ -71,7 +71,7 @@ MONITOR_TARGETS = [
         "name": "帥哥",
         "ppsn": "20372100006053110",
         "webhook_url": "https://discord.com/api/webhooks/1538539299140673598/riKlzYja9kr1WCy58SRsY0trtX7gq0K9cgnugs2T1xTMd00cNNIq267VQ_R8oizMSJdC",
-        "parts": ["CAPE", "HAIR", "GLOVE" ,"ONEHANDED_WEAPON"]  # 監控這人的披風
+        "parts": ["CAPE"]  # 監控這人的披風
     }
 ]
 
