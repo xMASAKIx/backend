@@ -10,7 +10,7 @@ CORS(app)
 # ==================== [ ⚙️ 多人多部位監控設定區 ] ====================
 # 
 # 你可以無限往下增加監控目標，每個人可以有獨立的名稱、部位與通知頻道。
-# 部位代碼參考：HAIR(髮型), CAP(帽子), COAT(上衣), PANTS(下衣), CAPE(披風), GLOVE(手套), SHOES(鞋子)
+# 部位代碼參考：HAIR(髮型), CAP(帽子), COAT(上衣), PANTS(下衣), CAPE(披風), GLOVE(手套), SHOES(鞋子)ONEHANDED_WEAPON(單手武器), TWOHANDED_WEAPON(雙手武器)
 #
 MONITOR_TARGETS = [
     {
@@ -35,11 +35,11 @@ MONITOR_TARGETS = [
         "name": "캡틴봉봉",
         "ppsn": "20372100000155226",
         "webhook_url": "https://discord.com/api/webhooks/1538539299140673598/riKlzYja9kr1WCy58SRsY0trtX7gq0K9cgnugs2T1xTMd00cNNIq267VQ_R8oizMSJdC",
-        "parts": ["CAPE"]  # 監控這人的披風
+        "parts": ["HAIR", "CAPE"]  # 監控這人的披風
     },
     {
-        "name": "PAKA",
-        "ppsn": "20372100005770592",
+        "name": "7ut8N",
+        "ppsn": "20372100002553986",
         "webhook_url": "https://discord.com/api/webhooks/1538539299140673598/riKlzYja9kr1WCy58SRsY0trtX7gq0K9cgnugs2T1xTMd00cNNIq267VQ_R8oizMSJdC",
         "parts": ["CAPE"]  # 監控這人的披風
     },
@@ -53,13 +53,19 @@ MONITOR_TARGETS = [
         "name": "阿福",
         "ppsn": "20372100005241912",
         "webhook_url": "https://discord.com/api/webhooks/1538539299140673598/riKlzYja9kr1WCy58SRsY0trtX7gq0K9cgnugs2T1xTMd00cNNIq267VQ_R8oizMSJdC",
+        "parts": ["CAPE", "HAIR"]  # 監控這人的披風
+    },
+    {
+        "name": "zlf7Q",
+        "ppsn": "20372100001478471",
+        "webhook_url": "https://discord.com/api/webhooks/1538539299140673598/riKlzYja9kr1WCy58SRsY0trtX7gq0K9cgnugs2T1xTMd00cNNIq267VQ_R8oizMSJdC",
         "parts": ["CAPE"]  # 監控這人的披風
     },
     {
-        "name": "阿福",
-        "ppsn": "20372100005241912",
+        "name": "00Devi1",
+        "ppsn": "20372100003196467",
         "webhook_url": "https://discord.com/api/webhooks/1538539299140673598/riKlzYja9kr1WCy58SRsY0trtX7gq0K9cgnugs2T1xTMd00cNNIq267VQ_R8oizMSJdC",
-        "parts": ["HAIR"]  # 監控這人的披風
+        "parts": ["CAPE"]  # 監控這人的披風
     }
 ]
 
