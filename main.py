@@ -13,7 +13,7 @@ CORS(app)
 # 你可以無限往下增加監控目標，每個人可以有獨立的名稱、部位與通知頻道。
 # 部位代碼參考：HAIR(髮型), CAP(帽子), COAT(上衣), PANTS(下衣), CAPE(披風), GLOVE(手套), SHOES(鞋子),ONEHANDED_WEAPON(單手武器), TWOHANDED_WEAPON(雙手武器)
 #
-DISCORD_WEBHOOK = os.environ.get("DISCORD_WEBHOOK_URL")
+DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
 
 MONITOR_TARGETS = [
     {
