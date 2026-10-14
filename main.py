@@ -47,10 +47,10 @@ MONITOR_TARGETS = [
         "parts": ["CAPE"]  # 監控這人的披風
     },
     {
-        "name": "PAKA",
-        "ppsn": "20372100005770592",
+        "name": "나기히카루",
+        "ppsn": "20372100000820899",
         "webhook_url": DISCORD_WEBHOOK_URL,
-        "parts": ["HAIR"]  # 監控這人的披風
+        "parts": ["CAPE", "HAIR", "GLOVE"]  # 監控這人的披風
     },
     {
         "name": "阿福",
