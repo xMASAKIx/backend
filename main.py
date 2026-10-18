@@ -20,19 +20,19 @@ MONITOR_TARGETS = [
         "name": "Xuan",
         "ppsn": "20372100005972917",
         "webhook_url": DISCORD_WEBHOOK_URL,
-        "parts": ["HAIR"]  # 監控這人的髮型
+        "parts": ["HAIR", "CAPE"]  # 監控這人的髮型
     },
     {
         "name": "쿠죠린",
         "ppsn": "20372100000900216",
         "webhook_url": DISCORD_WEBHOOK_URL,
-        "parts": ["HAIR"]  # 監控這人的髮型
+        "parts": ["HAIR", "CAPE"]  # 監控這人的髮型
     },
     {
         "name": "흐접",
         "ppsn": "20372100000275176",
         "webhook_url": DISCORD_WEBHOOK_URL,
-        "parts": ["HAIR"]  # 監控這人的髮型
+        "parts": ["HAIR", "CAPE"]  # 監控這人的髮型
     },
     {
         "name": "캡틴봉봉",
@@ -44,7 +44,7 @@ MONITOR_TARGETS = [
         "name": "7ut8N",
         "ppsn": "20372100002553986",
         "webhook_url": DISCORD_WEBHOOK_URL,
-        "parts": ["CAPE"]  # 監控這人的披風
+        "parts": ["CAPE", "HAIR"]  # 監控這人的披風
     },
     {
         "name": "나기히카루",
@@ -62,19 +62,25 @@ MONITOR_TARGETS = [
         "name": "zlf7Q",
         "ppsn": "20372100001478471",
         "webhook_url": DISCORD_WEBHOOK_URL,
-        "parts": ["CAPE"]  # 監控這人的披風
+        "parts": ["CAPE", "HAIR"]  # 監控這人的披風
     },
     {
         "name": "00Devi1",
         "ppsn": "20372100003196467",
         "webhook_url": DISCORD_WEBHOOK_URL,
-        "parts": ["CAPE"]  # 監控這人的披風
+        "parts": ["CAPE", "HAIR"]  # 監控這人的披風
     },
     {
         "name": "小火鍋",
         "ppsn": "20372100007413276",
         "webhook_url": DISCORD_WEBHOOK_URL,
         "parts": ["CAPE", "HAIR", "GLOVE" ,"ONEHANDED_WEAPON"]  # 監控這人的披風
+    },
+    {
+        "name": "PAKA頭",
+        "ppsn": "20372100001611331",
+        "webhook_url": DISCORD_WEBHOOK_URL,
+        "parts": ["CAPE", "HAIR"]  # 監控這人的披風
     }
 ]
 
