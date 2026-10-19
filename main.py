@@ -23,6 +23,12 @@ MONITOR_TARGETS = [
         "parts": ["HAIR", "CAPE"]  # 監控這人的髮型
     },
     {
+        "name": "波爾",
+        "ppsn": "20372100005602233",
+        "webhook_url": DISCORD_WEBHOOK_URL,
+        "parts": ["HAIR", "CAP", "COAT", "PANTS", "CAPE", "GLOVE", "SHOES"]  # 監控這人的髮型
+    },
+    {
         "name": "쿠죠린",
         "ppsn": "20372100000900216",
         "webhook_url": DISCORD_WEBHOOK_URL,
